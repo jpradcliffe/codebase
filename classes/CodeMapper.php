@@ -10,14 +10,17 @@ class CodeMapper
     include "config.php";
     $query = "SELECT * FROM codebase_code LIMIT 10";
     try {
-    $results = $db->query($query);
-    // This FETCH_CLASS mode is cool: it maps columns in table to corresponding properties in the CodeSnippet Class.
-    // Which makes it easy to map to the class's getters and setters
-    return $results->fetchAll(PDO::FETCH_CLASS, "Code");
-    $db = null;
-    } catch(Exception $err) {
-        throw $err->getMessage();
+      // This function is cool: it "maps" columns in db as variables which I can then pass
+      // into a new Code object.
+      function rowMapper($id, $name, $description, $code, $tags){
+        return new Code($id, $name, $description, $code, $tags);
       }
+      $results = $db->query($query);
+      return $results->fetchAll(PDO::FETCH_FUNC, "rowMapper"); // PDO::FETCH_FUNC passes each result to rowMapper()
+    } catch(Exception $err) {
+      echo $err->getMessage();
+    }
+    $db = null;
   }
 
   public function searchCode($searchArray)
@@ -30,8 +33,13 @@ class CodeMapper
     $query = substr($sql, 0, -14);
     $query .= "LIMIT 10";
     try {
+      // This function is cool: it "maps" columns in db as variables which I can then pass
+      // into a new Code object.
+      function rowMapper($id, $name, $description, $code, $tags){
+        return new Code($id, $name, $description, $code, $tags);
+      }
       $results = $db->query($query);
-      return $results->fetchAll(PDO::FETCH_CLASS, "Code");
+      return $results->fetchAll(PDO::FETCH_FUNC, "rowMapper"); // PDO::FETCH_FUNC passes each result to rowMapper()
     } catch(Exception $err) {
       echo $err->getMessage();
     }

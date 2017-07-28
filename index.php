@@ -15,11 +15,11 @@ include "classes/CodeRenderer.php"; // RenderCode Class
             <?php
             $search = null;
             $search = strtolower(trim(filter_input(INPUT_GET, "search", FILTER_SANITIZE_STRING)));
+            $render = new CodeRenderer();
             if($search) { // If a search has been initialized execute next code block
             $searchArray = explode(" ", $search);
-            $render = new CodeRenderer();
             echo $render->render($searchArray);
-            }
+          } 
             ?>
           <div class="panel panel-success">
             <div class="panel-heading">

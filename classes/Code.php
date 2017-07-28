@@ -7,7 +7,25 @@ class Code
   private $code;
   private $tags = []; // i.e. php,arrays,symfony,react,connection,database etc....
 
-    // Set / Get $Name
+  /**
+     * Constructor
+     */
+  // Constructor method sets values when class is instanciated
+  public function __construct($id, $name, $description, $code, $tags) {
+    $this->id = $id; // I'm not currently using id. Potentially useful when instanciaiting objects using db data
+    $this->setName($name);
+    $this->setDescription($description);
+    $this->setCode($code);
+    $this->setTags($tags);
+    // Instanciate new CodeMapper object "$mapper" if $id = null i.e it isn't already in the databse
+    if(!$id) {
+      $mapper = new CodeMapper();
+      // Call "addCode" method to persist data to db
+      $mapper->addCode($this->name, $this->description, $this->code, $this->tags);
+    }
+  }
+
+  // Set / Get $Name
   public function setName($name)
   {
     return $this->name = $name;

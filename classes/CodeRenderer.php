@@ -20,7 +20,16 @@ class CodeRenderer
         $output .= "</div>";
         $output .= "<div class=\"panel-body\">";
         $output .= "<p>" . $results[$i]->getDescription() . "</p>";
-        $output .= "<pre>" . $results[$i]->getCode() . "</pre>";
+        // I'm looking to see if php, css or js is one of the "tags" so I can $language to assign
+        // a class attribute of language-{$language} to the <pre> and <code> elements below
+        // define $language
+        $language = "html";
+        if(preg_match("/php/", $results[$i]->getTags())) $language = "php";
+        if(preg_match("/css/", $results[$i]->getTags())) $language = "css";
+        if(preg_match("/js/", $results[$i]->getTags())) $language = "javascript";
+
+        $output .= "<pre class='language-".$language."'><code class='language-".$language."'>"
+                    . $results[$i]->getCode() . "</code></pre>";
         $output .= "</div>";
         $output .= "</div>";
       }

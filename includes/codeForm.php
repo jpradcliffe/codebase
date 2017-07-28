@@ -2,20 +2,15 @@
   if($_SERVER["REQUEST_METHOD"] == "POST") {
     $inputName = trim(filter_input(INPUT_POST, "inputName", FILTER_SANITIZE_STRING));
     $inputDescription = trim(filter_input(INPUT_POST, "inputDescription", FILTER_SANITIZE_STRING));
-    $inputCode = trim(filter_input(INPUT_POST, "inputCode", FILTER_SANITIZE_STRING));
+    $inputCode = htmlspecialchars(trim(filter_input(INPUT_POST, "inputCode")));
     $inputTags = str_replace(" ", "", filter_input(INPUT_POST, "inputTags", FILTER_SANITIZE_STRING));
-    $inputTagsFinal = str_replace(",", " ", $inputTags);
+    $inputTagsSanitized = str_replace(",", " ", $inputTags);
     // form validation
     if($inputName && $inputDescription && $inputCode && $inputTags) {
-    // Passing user input to setters
-    $setter = new Code();
-    $name = $setter->setName($inputName);
-    $description = $setter->setDescription($inputDescription);
-    $code = $setter->setCode($inputCode);
-    $tags = $setter->setCode($inputTagsFinal);
-    // Passing "set" input to CodeMapper->addCode() to persist data to db
-    $mapper = new CodeMapper();
-    $mapper->addCode($name, $description, $code, $tags);
+      // Instanciate new Code object "$code" passing arguments to __construct()
+      // "null" is passed as 1st arg because 1st construct() param is $id; which I don't have yet
+      // doing this will ensure new object is persisted to db (this is evaluated in construct())
+      $code = new Code(null, $inputName, $inputDescription, $inputCode, $inputTagsSanitized);
     } else {
     echo "<div class=\"alert alert-danger\" role=\"alert\">All fields required</div>";
     }
